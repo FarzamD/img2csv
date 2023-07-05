@@ -3,4 +3,5 @@ let mainWidnow = null;
 app.on('ready', () => {
 	console.log('Hello from Electron');
 	mainWidnow = new BrowserWindow();
+	mainWidnow.webContents.loadURL(`file://${__dirname}/index.html`);
 });
