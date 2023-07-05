@@ -1,0 +1,8 @@
+{
+  "name": "csv_app",
+  "version": "1.0.0",
+  "description": "no desc",
+  "main": "index.js",
+  "author": "",
+  "license": "MIT"
+}
