@@ -2,15 +2,8 @@
 # %%% imports
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 
 # %%% defs
-def plot_img(img):
-    plt.imshow(img, cmap = 'gray', interpolation = 'bicubic')
-    plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
-    # plt.plot([200,300,400],[100,200,300],'c', linewidth=5)#plots line
-    plt.show()
-#
 def plot_lines(lines, image):#array version of plot_lines
     img = cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
     lines_r= lines.reshape((-1,2)).astype(np.float64)
