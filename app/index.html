@@ -5,12 +5,26 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
+    <script src="./index.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+    <!-- <div> -->
+        <!-- <button onclick="console.log('load');">Load image</button> -->
+        <!-- <button onclick="loadImg()">Load image</button> -->
+    <!-- </div> -->
+    <!-- <div> -->
+        <!-- <button style="background-color: #ff8888;" onclick="app.quit()">Exit</button> -->
+    <!-- </div> -->
 </head>
 
 <body>
     <h1>Hello Electron!</h1>
+    <form action="#" method="post" enctype="multipart/form-data">
+        <input id="imgForm" type="file" accept="image/*" onchange="loadImg(event)" name="filename"/>
+    </form>
+    <img id="img">
+    <canvas id="canvas">
+    <button onclick="detectLines()">detect lines</button>
 </body>
 
 </html>

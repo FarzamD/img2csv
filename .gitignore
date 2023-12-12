@@ -1,0 +1,6 @@
+node_modules
+lines.json
+.tmp
+.cache
+*.zip
+*.rar
