@@ -44,8 +44,8 @@ pip install pytesseract
 + extracts lines from smoothed edges using cv2.HoughLines
     + split lines to horizontal and vertical based on line angle
 #### table extraction
-+ detects table from lines
-+ extracts cells from table
++ detects table corners from lines
++ extracts cells from table based on cell corners
     + turn cell images into text using pytesseract
 + merges cell texts into csv table
 
