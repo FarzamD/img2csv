@@ -71,7 +71,7 @@ pip install pytesseract
     + image tab: where uploaded image and detected lines are displayed
     + table tab: where detected table is displayed and lets you choose as a file 
 + ***image tab:***
-    ![app UI view](./blob/main/readme-blob/app.PNG)
+    ![app UI view](./readme-blob/app.PNG)
     + first upload an image
     ![after uploading image](./blob/main/readme-blob/auto-detect-lines.PNG)
     + after uploading image if there are undetected lines or extra lines; modify number of lines
