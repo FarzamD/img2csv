@@ -1,30 +1,30 @@
 # %% imports
-import cv2
+from cv2 import cvtColor, COLOR_BGR2RGB, Canny, medianBlur, HoughLines
+from cv2 import line, circle, imwrite, imread
 import numpy as np
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 
+from pytesseract import image_to_string as tess_img2str
+from pandas import DataFrame as DF
 from PIL import Image, ImageTk
-import pytesseract
-import pandas as pd
 
 # %% defs
 def cv2tk(image):
-    # if im
-    img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    img = cvtColor(image, COLOR_BGR2RGB)
     img = Image.fromarray(img)
     return ImageTk.PhotoImage(img)
 def Edge(image):
-    edges = cv2.Canny(image, 50, 150, apertureSize=3)
-    # smooth
-    return cv2.medianBlur(edges,3)
+    edges = Canny(image, 50, 150, apertureSize=3)
+    return medianBlur(edges,3) # return smoothed edges
+
 # line detection
 def line_threshold(shape, alternative=140):
     trh= min(shape)*2//5
     return max(trh, alternative)
 def line_detection(image,alternative=140):
-    return cv2.HoughLines(image, 1, np.pi/180, line_threshold(image.shape,alternative=alternative))
+    return HoughLines(image, 1, np.pi/180, line_threshold(image.shape,alternative=alternative))
 def plot_lines(lines, image):#array version of plot_lines
     img = image.copy()
     lines_r= lines.reshape((-1,2)).astype(np.float64)
@@ -32,7 +32,6 @@ def plot_lines(lines, image):#array version of plot_lines
 
     a = np.cos(theta) # value of cos(theta)
     b = np.sin(theta) # value of sin(theta)
-        
     x0 = a*r # value rcos(theta)
     y0 = b*r # value rsin(theta)
 
@@ -41,8 +40,9 @@ def plot_lines(lines, image):#array version of plot_lines
     x2_ = np.round(x0 - 1000*(-b)).astype(int) # rounded off value of (rcos(theta)+1000sin(theta))
     y2_ = np.round(y0 - 1000*(a)).astype(int) # rounded off value of (rsin(theta)-1000cos(theta))
     for x1, y1, x2, y2 in zip(x1_, y1_, x2_, y2_):
-        cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+        line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
     return img
+
 #corner detection
 def m_c(r_theta):
     r, theta = r_theta    
@@ -77,11 +77,11 @@ def corners(lines, image):
         for j in range(m):
             rt1= lines_V[j]
             p[i,j]=solve(rt1, rt2)
-            # g=255*i//n
-            # r=255-255*j//m
+            # B,G,R = 0, 255*i//n, 255-255*j//m
             # x,y=p[i,j]
-            # cv2.circle(image,(x,y),10, (0,g,r), -1)
+            # circle(image,(x,y),10, (B,G,R), -1)
     return p
+
 # table extraction
 def table(img, corners):
     p=corners.copy()
@@ -90,16 +90,13 @@ def table(img, corners):
     for i in range(n-1):
         row=[]
         for j in range(m-1):
-            # print('j='+str(j))
             x0,y0=p[i,j]
             x1,y1=p[i+1,j+1]
             roi= img[y0:y1, x0:x1]
             img_path= f'./cells/cell_{i}_{j}.png'
-            cv2.imwrite(img_path, roi)
-            text = pytesseract.image_to_string(roi)
+            imwrite(img_path, roi)
+            text = tess_img2str(roi)
             row.append(text.strip())
-            # cmd='tesseract '+ img_path+ f' out_{i}_{j}'
-            # subprocess.Popen(cmd)
         csv.append(row)
     return csv
 
@@ -131,7 +128,7 @@ class ImageUploaderApp:
         file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.gif")])
 
         if file_path:
-            self.image = cv2.imread(file_path)
+            self.image = imread(file_path)
             img = cv2tk(self.image)
             self.image_label.config(image=img)
             self.image_label.image = img
@@ -177,7 +174,7 @@ class ImageUploaderApp:
     def create_df(self):
         p=corners(self.lines, self.image)
         csv= table(self.image, p)
-        self.df= pd.DataFrame(csv)
+        self.df= DF(csv)
         
 
     def unpack_table(self):
